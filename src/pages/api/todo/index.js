@@ -1,4 +1,4 @@
-import { createNewData, getAllData } from "../../../services/serviceOperations";
+import { createNewData, getAllData, updateDataByAny } from "../../../services/serviceOperations";
 
 const handler = async (req, res) => {
   if (req.method === "GET") {
@@ -21,6 +21,38 @@ const handler = async (req, res) => {
       const body = await req.body;
 
       const data = await createNewData("TodoItem", body);
+
+      if (!data || data.error) {
+        throw new Error(data.error);
+      }
+      return res
+        .status(200)
+        .json({ status: "success", message: "api isteği başarılı" });
+    } catch (error) {
+      return res.status(500).json({ status: "error", error: error.message });
+    }
+  }
+  else if (req.method === "PUT") {
+    try {
+      const body = await req.body;
+
+      const data = await updateDataByAny("TodoItem", body);
+
+      if (!data || data.error) {
+        throw new Error(data.error);
+      }
+      return res
+        .status(200)
+        .json({ status: "success", message: "api isteği başarılı" });
+    } catch (error) {
+      return res.status(500).json({ status: "error", error: error.message });
+    }
+  }
+  else if (req.method === "DELETE") {
+    try {
+      const body = await req.body;
+
+      const data = await deleteDataByAny("TodoItem", body);
 
       if (!data || data.error) {
         throw new Error(data.error);

@@ -1,15 +1,21 @@
 "use client";
 
-import Button from "./Button";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import Modal from "./Modal";
 import { useState } from "react";
-import { Checkbox, DialogContentText } from "@mui/material";
+import {
+  Button,
+  Checkbox,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+} from "@mui/material";
 import UpdateForm from "./UpdateForm";
+import { deleteAPI } from "@/services/fetchApi";
+import CustomButton from "./CustomButton";
 
 type ModalState = {
-  add: boolean;
   update: boolean;
   delete: boolean;
 };
@@ -18,13 +24,27 @@ type ItemProps = {
   handleOpen: (action: "update" | "delete") => void;
   handleClose: (action: "update" | "delete") => void;
   modalState: ModalState;
+  id: string;
+  title: string;
+  completed: boolean;
 };
 
-const Item = ({ handleOpen, handleClose, modalState }: ItemProps) => {
-  const [checked, setChecked] = useState(false);
+const Item = ({
+  handleOpen,
+  handleClose,
+  modalState,
+  id,
+  title,
+  completed,
+}: ItemProps) => {
+  const [checked, setChecked] = useState(completed);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
+  };
+
+  const handleDelete = (id: string) => {
+    deleteAPI("/todo", { id: id });
   };
 
   return (
@@ -40,45 +60,35 @@ const Item = ({ handleOpen, handleClose, modalState }: ItemProps) => {
             checked && "text-gray-400"
           }`}
         >
-          Item
+          {title}
         </div>
       </div>
 
       <div className="flex-end flex-1 gap-2">
         {/* Update Task Button */}
-        <Button
+        <CustomButton
           className="transition-all duration-300 ease-linear hover:bg-[#ff621f] btn-hover"
           onClick={() => handleOpen("update")}
         >
           <EditIcon className="text-[#ff621f] transition-all duration-300 ease-linear icon-hover" />
-        </Button>
+        </CustomButton>
         <Modal
           handleClose={() => handleClose("update")}
           open={modalState.update}
           action="update"
         >
-          <UpdateForm handleClose={() => handleClose("update")} />
+          <DialogContent>
+            <UpdateForm updatedTaskId={id} handleClose={() => handleClose("update")} />
+          </DialogContent>
         </Modal>
 
         {/* Delete Task Buttton */}
-        <Button
+        <CustomButton
           className="transition-all duration-300 ease-linear hover:bg-red-500 btn-hover"
-          onClick={() => handleOpen("delete")}
+          onClick={() => handleDelete(id)}
         >
           <DeleteOutlineRoundedIcon className="text-red-500 transition-all duration-300 ease-linear icon-hover" />
-        </Button>
-        <Modal
-          handleClose={() => handleClose("delete")}
-          open={modalState.delete}
-          action="delete"
-        >
-          <DialogContentText
-            id="alert-dialog-description"
-            className="text-[#1f3347] font-medium"
-          >
-            Are you sure you want to delete this Task?
-          </DialogContentText>
-        </Modal>
+        </CustomButton>
       </div>
     </div>
   );

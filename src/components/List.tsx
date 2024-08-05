@@ -1,5 +1,7 @@
 import { ModalState } from "@/types";
 import Item from "./ui/Item";
+import { getAPI } from "@/services/fetchApi";
+import { useEffect, useState } from "react";
 
 type ListProps = {
   handleOpen: (action: "update" | "delete") => void;
@@ -8,6 +10,16 @@ type ListProps = {
 };
 
 const List = ({ handleOpen, handleClose, modalState }: ListProps) => {
+  const [todoItems, setTodoItems] = useState([]);
+
+  useEffect(() => {
+    getAPI("/todo").then((res) => {
+      if (res) {
+        setTodoItems(res.data);
+      }
+    });
+  }, []);
+
   return (
     <div className="w-full mt-3">
       <div className="flex-between p-2 bg-gray-200 rounded-sm mb-4">
@@ -20,16 +32,17 @@ const List = ({ handleOpen, handleClose, modalState }: ListProps) => {
       </div>
 
       <div className="flex flex-col gap-2">
-        <Item
-          handleOpen={handleOpen}
-          handleClose={handleClose}
-          modalState={modalState}
-        />
-        <Item
-          handleOpen={handleOpen}
-          handleClose={handleClose}
-          modalState={modalState}
-        />
+        {todoItems.map((item) => (
+          <Item
+            key={item["id"]}
+            handleOpen={handleOpen}
+            handleClose={handleClose}
+            modalState={modalState}
+            id={item["id"]}
+            title={item["title"]}
+            completed={item["completed"]}
+          />
+        ))}
       </div>
     </div>
   );

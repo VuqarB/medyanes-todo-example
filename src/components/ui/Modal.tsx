@@ -49,7 +49,8 @@ export default function Modal({
           {action === "add" && "Add Task"}
           {action === "update" && "Edit Task"}
         </DialogTitle>
-        <DialogContent>{children}</DialogContent>
+        {children}
+        {/* <DialogContent>{children}</DialogContent>
         <DialogActions>
           {action === "delete" && (
             <Button
@@ -79,7 +80,7 @@ export default function Modal({
           >
             Close
           </Button>
-        </DialogActions>
+        </DialogActions> */}
       </Dialog>
     </>
   );

@@ -12,7 +12,7 @@ type ButtonProps = {
   icon?: SvgIconComponent;
 };
 
-export default function Button({
+export default function CustomButton({
   className,
   href,
   onClick,
