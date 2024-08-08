@@ -63,7 +63,7 @@ const Item = ({ item, handleOpen, handleClose, modalState }: ItemProps) => {
           modalState={modalState.update}
           handleClose={() => handleClose("update")}
         >
-          <UpdateForm id={item?.id} handleClose={() => handleClose("update")} />
+          <UpdateForm id={item?.id} title={item?.title} handleClose={() => handleClose("update")} />
         </Modal>
 
         {/* Delete Task Button */}

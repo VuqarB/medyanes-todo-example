@@ -13,16 +13,20 @@ import toast from "react-hot-toast";
 
 type UpdateFormProps = {
   id: string;
+  title: string;
   handleClose: () => void;
 };
 
-const UpdateForm = ({ id, handleClose }: UpdateFormProps) => {
+const UpdateForm = ({ id, title, handleClose }: UpdateFormProps) => {
   const [updatedTask, setUpdatedTask] = useState("");
   const { refresh } = useRouter();
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (updatedTask === "") return;
+    if (updatedTask === "" || updatedTask.trim() === title.trim()) {
+      toast.error("Nothing to update")
+      return
+    };
 
     putAPI("/todo", {
       where: { id },
