@@ -22,7 +22,10 @@ const AddForm = ({ handleClose }: AddFormProps) => {
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    if(title === "") return
+    if (title === "") {
+      toast.error("Nothing to add");
+      return;
+    }
 
     postAPI("/todo", { title })
       .then((res) => {
