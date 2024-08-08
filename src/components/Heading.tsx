@@ -2,8 +2,8 @@
 
 import AddIcon from "@mui/icons-material/Add";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
-import CustomButton from "./CustomButton";
-import Modal from "./Modal";
+import CustomButton from "./ui/CustomButton";
+import Modal from "./ui/Modal";
 import AddForm from "./AddForm";
 import { useState } from "react";
 import DeleteAll from "./DeleteAll";

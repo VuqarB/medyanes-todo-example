@@ -1,5 +1,5 @@
 import { getAPI } from "@/services/fetchApi";
-import Heading from "./ui/Heading";
+import Heading from "./Heading";
 import List from "./List";
 
 const Todo = async () => {

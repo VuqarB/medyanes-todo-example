@@ -1,11 +1,11 @@
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
-import Modal from "./Modal";
+import Modal from "./ui/Modal";
 import { useState } from "react";
 import { Checkbox } from "@mui/material";
 import UpdateForm from "./UpdateForm";
 import { putAPI } from "@/services/fetchApi";
-import CustomButton from "./CustomButton";
+import CustomButton from "./ui/CustomButton";
 import Delete from "./Delete";
 import { ItemTypes } from "@/types";
 

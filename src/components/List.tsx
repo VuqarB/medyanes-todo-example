@@ -1,7 +1,7 @@
 "use client";
 
 import { ItemTypes } from "@/types";
-import Item from "./ui/Item";
+import Item from "./Item";
 import { useState } from "react";
 
 type ListProps = {

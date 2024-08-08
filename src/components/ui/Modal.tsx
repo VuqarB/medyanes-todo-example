@@ -19,35 +19,6 @@ export default function Modal({
   modalState,
   handleClose,
 }: ModalProps) {
-  // const createNewTask = (e: FormEvent) => {
-  //   e.preventDefault();
-  //   console.log("something")
-  //   postAPI("/todo", newTask).then((res) => {
-  //     if(res.status && (res.status === 200 || res.status === "success")) {
-  //       console.log("Heyyyyy")
-  //     }
-  //   }).catch((error) => {
-  //     console.error("Error creating task:", error);
-  //   });
-
-  //   setNewTask("")
-  // };
-
-  // const [modalState, setModalState] = useState<ModalState>({
-  //   add: true,
-  //   update: false,
-  //   delete: false,
-  //   deleteAll: false,
-  // });
-
-  // const handleOpen = (action: ModalAction) => {
-  //   setModalState((prevState) => ({ ...prevState, [action]: true }));
-  // };
-
-  // const handleClose = (action: ModalAction) => {
-  //   setModalState((prevState) => ({ ...prevState, [action]: false }));
-  // };
-
   return (
     <>
       <Dialog

@@ -13,7 +13,7 @@ const DeleteAll = ({ todoItemsCount, handleClose }: DeleteAllProps) => {
 
   const deleteAllTasks = () => {
     if (todoItemsCount > 0) {
-      deleteAPI("/todo")
+      deleteAPI("/todo", null)
         .then((res) => {
           if (res.status === "success" || res.status === 200) {
             toast.success("All tasks were deleted");
