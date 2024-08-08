@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SvgIconComponent } from '@mui/icons-material';
+import { SvgIconComponent } from "@mui/icons-material";
 
 type ButtonProps = {
   href?: string;
@@ -10,7 +10,8 @@ type ButtonProps = {
   padding?: string;
   onClick?: () => void;
   icon?: SvgIconComponent;
-};
+} & React.ButtonHTMLAttributes<HTMLButtonElement> &
+  React.AnchorHTMLAttributes<HTMLAnchorElement>;
 
 export default function CustomButton({
   className,
@@ -19,21 +20,22 @@ export default function CustomButton({
   children,
   bgColor,
   padding,
-  icon: Icon
+  icon: Icon,
+  ...props
 }: ButtonProps) {
-  const classes = `flex-between gap-1 transition-all duration-300 ease-linear ${bgColor} text-white font-bold rounded text-sm md:text-base
+  const classes = `flex-between gap-1 transition-all duration-300 ease-linear ${bgColor} text-white font-bold rounded text-sm md:text-base  focus:outline-none
     ${padding || "p-2"}
     ${className || ""}`;
 
   const renderButton = () => (
-    <button className={classes} onClick={onClick}>
+    <button className={classes} onClick={onClick} {...props}>
       {Icon && <Icon />}
       {children}
     </button>
   );
 
   const renderLink = () => (
-    <Link href={href || ""} className={classes} onClick={onClick}>
+    <Link href={href || ""} className={classes} onClick={onClick} {...props}>
       {Icon && <Icon />}
       {children}
     </Link>

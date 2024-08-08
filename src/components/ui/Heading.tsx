@@ -1,24 +1,26 @@
-"use client"
+"use client";
+
 import AddIcon from "@mui/icons-material/Add";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import CustomButton from "./CustomButton";
 import Modal from "./Modal";
-import { ModalState } from "@/types";
 import AddForm from "./AddForm";
-import {
-  Button,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-} from "@mui/material";
+import { useState } from "react";
+import DeleteAll from "./DeleteAll";
 
-type HeadingProps = {
-  handleOpen: (action: "add" | "deleteAll") => void;
-  handleClose: (action: "add" | "deleteAll") => void;
-  modalState: ModalState;
-};
+const Heading = ({ todoItemsCount }: { todoItemsCount: number }) => {
+  const [modalState, setModalState] = useState({
+    add: false,
+    deleteAll: false,
+  });
 
-const Heading = ({ handleOpen, handleClose, modalState }: HeadingProps) => {
+  const handleOpen = (action: "add" | "deleteAll") => {
+    setModalState((prevState) => ({ ...prevState, [action]: true }));
+  };
+
+  const handleClose = (action: "add" | "deleteAll") => {
+    setModalState((prevState) => ({ ...prevState, [action]: false }));
+  };
 
   return (
     <div className="flex-between w-full">
@@ -37,13 +39,25 @@ const Heading = ({ handleOpen, handleClose, modalState }: HeadingProps) => {
           <span>Add</span>
         </CustomButton>
         <Modal
+          modalState={modalState.add}
           handleClose={() => handleClose("add")}
-          open={modalState.add}
-          action="add"
         >
-          <DialogContent>
-            <AddForm handleClose={() => handleClose("add")} />
-          </DialogContent>
+          <AddForm handleClose={() => handleClose("add")} />
+        </Modal>
+
+        {/* Delete All Tasks Button */}
+        <CustomButton
+          bgColor="bg-red-600"
+          className="hover:bg-red-700"
+          onClick={() => handleOpen("deleteAll")}
+        >
+          <DeleteOutlineRoundedIcon />
+        </CustomButton>
+        <Modal
+          modalState={modalState.deleteAll}
+          handleClose={() => handleClose("deleteAll")}
+        >
+          <DeleteAll todoItemsCount={todoItemsCount} handleClose={() => handleClose("deleteAll")} />
         </Modal>
       </div>
     </div>

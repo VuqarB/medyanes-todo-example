@@ -1,37 +1,19 @@
-"use client";
-import { ModalState } from "@/types";
-import List from "./List";
+import { getAPI } from "@/services/fetchApi";
 import Heading from "./ui/Heading";
-import { useState } from "react";
+import List from "./List";
 
-const Todo = () => {
-  const [modalState, setModalState] = useState<ModalState>({
-    add: false,
-    update: false,
-    delete: false,
-    deleteAll: false
+const Todo = async () => {
+  const todoItems = await getAPI("/todo").then((res) => {
+    if (res) {
+      return res.data;
+    }
+    return [];
   });
-
-  const handleOpen = (action: "add" | "update" | "delete" | "deleteAll") => {
-    setModalState((prevState) => ({ ...prevState, [action]: true }));
-  };
-
-  const handleClose = (action: "add" | "update" | "delete" | "deleteAll") => {
-    setModalState((prevState) => ({ ...prevState, [action]: false }));
-  };
 
   return (
     <section className="mt-28">
-      <Heading
-        handleClose={handleClose}
-        handleOpen={handleOpen}
-        modalState={modalState}
-      />
-      <List
-        handleClose={handleClose}
-        handleOpen={handleOpen}
-        modalState={modalState}
-      />
+      <Heading todoItemsCount={todoItems.length} />
+      <List todoItems={todoItems} />
     </section>
   );
 };

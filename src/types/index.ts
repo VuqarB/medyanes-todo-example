@@ -1,7 +1,8 @@
-export type ModalState = {
-    add: boolean;
-    update: boolean;
-    delete: boolean;
-    deleteAll: boolean;
-  };
-  
+export type ModalAction = "add" | "update" | "delete" | "deleteAll";
+
+export type ItemTypes = {
+  id: string;
+  title: string;
+  completed: boolean;
+  createdAt: string;
+};

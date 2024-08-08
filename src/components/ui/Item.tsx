@@ -1,19 +1,13 @@
-"use client";
-
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import Modal from "./Modal";
 import { useState } from "react";
-import {
-  Button,
-  Checkbox,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-} from "@mui/material";
+import { Checkbox } from "@mui/material";
 import UpdateForm from "./UpdateForm";
-import { deleteAPI } from "@/services/fetchApi";
+import { putAPI } from "@/services/fetchApi";
 import CustomButton from "./CustomButton";
+import Delete from "./Delete";
+import { ItemTypes } from "@/types";
 
 type ModalState = {
   update: boolean;
@@ -24,27 +18,20 @@ type ItemProps = {
   handleOpen: (action: "update" | "delete") => void;
   handleClose: (action: "update" | "delete") => void;
   modalState: ModalState;
-  id: string;
-  title: string;
-  completed: boolean;
+  item: ItemTypes;
 };
 
-const Item = ({
-  handleOpen,
-  handleClose,
-  modalState,
-  id,
-  title,
-  completed,
-}: ItemProps) => {
-  const [checked, setChecked] = useState(completed);
+const Item = ({ item, handleOpen, handleClose, modalState }: ItemProps) => {
+  const [checked, setChecked] = useState<boolean>(item?.completed);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked(event.target.checked);
-  };
+  const handleChecked = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const isChecked = event.target.checked;
+    setChecked(isChecked);
 
-  const handleDelete = (id: string) => {
-    deleteAPI("/todo", { id: id });
+    putAPI("/todo", {
+      where: { id: item?.id },
+      data: { completed: isChecked },
+    });
   };
 
   return (
@@ -52,7 +39,7 @@ const Item = ({
       <div className="flex items-center flex-[5] p-2">
         <Checkbox
           checked={checked}
-          onChange={handleChange}
+          onChange={handleChecked}
           inputProps={{ "aria-label": "controlled" }}
         />
         <div
@@ -60,7 +47,7 @@ const Item = ({
             checked && "text-gray-400"
           }`}
         >
-          {title}
+          {item?.title}
         </div>
       </div>
 
@@ -73,22 +60,25 @@ const Item = ({
           <EditIcon className="text-[#ff621f] transition-all duration-300 ease-linear icon-hover" />
         </CustomButton>
         <Modal
+          modalState={modalState.update}
           handleClose={() => handleClose("update")}
-          open={modalState.update}
-          action="update"
         >
-          <DialogContent>
-            <UpdateForm updatedTaskId={id} handleClose={() => handleClose("update")} />
-          </DialogContent>
+          <UpdateForm id={item?.id} handleClose={() => handleClose("update")} />
         </Modal>
 
-        {/* Delete Task Buttton */}
+        {/* Delete Task Button */}
         <CustomButton
           className="transition-all duration-300 ease-linear hover:bg-red-500 btn-hover"
-          onClick={() => handleDelete(id)}
+          onClick={() => handleOpen("delete")}
         >
           <DeleteOutlineRoundedIcon className="text-red-500 transition-all duration-300 ease-linear icon-hover" />
         </CustomButton>
+        <Modal
+          modalState={modalState.delete}
+          handleClose={() => handleClose("delete")}
+        >
+          <Delete id={item?.id} handleClose={() => handleClose("delete")} />
+        </Modal>
       </div>
     </div>
   );

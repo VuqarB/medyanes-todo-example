@@ -104,7 +104,7 @@ const deleteAPI = async (
     const data = await fetch(`${process.env.NEXT_PUBLIC_API_URL + URL}`, {
       method: method,
       headers: headers,
-      body: JSON.stringify(body),
+      body: body ? JSON.stringify(body) : null,
       cache: "no-store",
       // cache önemli! her çalıştığında cache'deki veri yerine -> güncel veriyi almasını sağlar.
       // bu olmaz ise üncel veriyi almayabiliyor dikkat et.

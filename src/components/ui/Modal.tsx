@@ -1,23 +1,23 @@
 "use client";
 
+import { ModalAction } from "@/types";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import { useState } from "react";
 
 type ModalProps = {
   children: React.ReactNode;
-  handleClose: () => void;
-  open: boolean;
-  action: "add" | "update" | "delete" | "deleteAll";
+  handleClose: (action: ModalAction) => void;
+  modalState: boolean;
 };
 
 export default function Modal({
   children,
+  modalState,
   handleClose,
-  open,
-  action,
 }: ModalProps) {
   // const createNewTask = (e: FormEvent) => {
   //   e.preventDefault();
@@ -33,54 +33,31 @@ export default function Modal({
   //   setNewTask("")
   // };
 
+  // const [modalState, setModalState] = useState<ModalState>({
+  //   add: true,
+  //   update: false,
+  //   delete: false,
+  //   deleteAll: false,
+  // });
+
+  // const handleOpen = (action: ModalAction) => {
+  //   setModalState((prevState) => ({ ...prevState, [action]: true }));
+  // };
+
+  // const handleClose = (action: ModalAction) => {
+  //   setModalState((prevState) => ({ ...prevState, [action]: false }));
+  // };
+
   return (
     <>
       <Dialog
-        open={open}
+        open={modalState}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
         maxWidth="xl"
       >
-        <DialogTitle
-          id="alert-dialog-title"
-          className="text-[22px] text-[#1f3347] font-bold leading-[1.38]"
-        >
-          {action === "add" && "Add Task"}
-          {action === "update" && "Edit Task"}
-        </DialogTitle>
         {children}
-        {/* <DialogContent>{children}</DialogContent>
-        <DialogActions>
-          {action === "delete" && (
-            <Button
-              onClick={handleClose}
-              variant="text"
-              color="error"
-              className="font-medium capitalize"
-            >
-              Delete
-            </Button>
-          )}
-          {action === "deleteAll" && (
-            <Button
-              onClick={handleClose}
-              variant="text"
-              color="error"
-              className="font-medium capitalize"
-            >
-              Delete
-            </Button>
-          )}
-          <Button
-            onClick={handleClose}
-            variant="text"
-            color="secondary"
-            className="font-medium capitalize"
-          >
-            Close
-          </Button>
-        </DialogActions> */}
       </Dialog>
     </>
   );

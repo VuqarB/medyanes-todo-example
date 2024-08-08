@@ -1,4 +1,10 @@
-import { createNewData, getAllData, updateDataByAny } from "../../../services/serviceOperations";
+import {
+  createNewData,
+  deleteDataAll,
+  deleteDataByAny,
+  getAllData,
+  updateDataByAny,
+} from "../../../services/serviceOperations";
 
 const handler = async (req, res) => {
   if (req.method === "GET") {
@@ -15,8 +21,7 @@ const handler = async (req, res) => {
         .status(500)
         .json({ status: "error", error: error.message, data: null });
     }
-  }
-   else if (req.method === "POST") {
+  } else if (req.method === "POST") {
     try {
       const body = await req.body;
 
@@ -31,15 +36,14 @@ const handler = async (req, res) => {
     } catch (error) {
       return res.status(500).json({ status: "error", error: error.message });
     }
-  }
-  else if (req.method === "PUT") {
+  } else if (req.method === "PUT") {
     try {
-      const body = await req.body;
+      const { where, data } = await req.body;
 
-      const data = await updateDataByAny("TodoItem", body);
+      const result = await updateDataByAny("TodoItem", where, data);
 
-      if (!data || data.error) {
-        throw new Error(data.error);
+      if (!result || result.error) {
+        throw new Error(result.error);
       }
       return res
         .status(200)
@@ -47,12 +51,13 @@ const handler = async (req, res) => {
     } catch (error) {
       return res.status(500).json({ status: "error", error: error.message });
     }
-  }
-  else if (req.method === "DELETE") {
+  } else if (req.method === "DELETE") {
     try {
       const body = await req.body;
 
-      const data = await deleteDataByAny("TodoItem", body);
+      const data = body
+        ? await deleteDataByAny("TodoItem", body)
+        : await deleteDataAll("TodoItem");
 
       if (!data || data.error) {
         throw new Error(data.error);

@@ -1,24 +1,26 @@
-import { ModalState } from "@/types";
+"use client";
+
+import { ItemTypes } from "@/types";
 import Item from "./ui/Item";
-import { getAPI } from "@/services/fetchApi";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type ListProps = {
-  handleOpen: (action: "update" | "delete") => void;
-  handleClose: (action: "update" | "delete") => void;
-  modalState: ModalState;
+  todoItems: ItemTypes[];
 };
 
-const List = ({ handleOpen, handleClose, modalState }: ListProps) => {
-  const [todoItems, setTodoItems] = useState([]);
+const List = ({ todoItems }: ListProps) => {
+  const [modalState, setModalState] = useState({
+    update: false,
+    delete: false,
+  });
 
-  useEffect(() => {
-    getAPI("/todo").then((res) => {
-      if (res) {
-        setTodoItems(res.data);
-      }
-    });
-  }, []);
+  const handleOpen = (action: "update" | "delete") => {
+    setModalState((prevState) => ({ ...prevState, [action]: true }));
+  };
+
+  const handleClose = (action: "update" | "delete") => {
+    setModalState((prevState) => ({ ...prevState, [action]: false }));
+  };
 
   return (
     <div className="w-full mt-3">
@@ -32,15 +34,13 @@ const List = ({ handleOpen, handleClose, modalState }: ListProps) => {
       </div>
 
       <div className="flex flex-col gap-2">
-        {todoItems.map((item) => (
+        {todoItems?.map((item: ItemTypes) => (
           <Item
-            key={item["id"]}
+            key={item?.id}
+            item={item}
             handleOpen={handleOpen}
             handleClose={handleClose}
             modalState={modalState}
-            id={item["id"]}
-            title={item["title"]}
-            completed={item["completed"]}
           />
         ))}
       </div>
