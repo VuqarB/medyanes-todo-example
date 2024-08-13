@@ -8,8 +8,10 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
 import toast from "react-hot-toast";
+import { FormikHelpers, useFormik } from "formik";
+import * as Yup from "yup";
+import { FormErrorMessage } from "./ui/FormErrorMessage";
 
 type UpdateFormProps = {
   id: string;
@@ -17,39 +19,58 @@ type UpdateFormProps = {
   handleClose: () => void;
 };
 
+type FormValues = {
+  title: string;
+};
+
+const validationSchema = (oldTitle: string) =>
+  Yup.object({
+    title: Yup.string()
+      .required("Nothing to update.")
+      .notOneOf([oldTitle.trim()], "New title, please."),
+  });
+
 const UpdateForm = ({ id, title, handleClose }: UpdateFormProps) => {
-  const [updatedTask, setUpdatedTask] = useState("");
   const { refresh } = useRouter();
 
-  const onSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    if (updatedTask === "" || updatedTask.trim() === title.trim()) {
-      toast.error("Nothing to update")
-      return
-    };
-
-    putAPI("/todo", {
-      where: { id },
-      data: { title: updatedTask },
-    })
-      .then((res) => {
-        if (res.status === "success" || res.status === 200) {
-          toast.success("The task was edited");
-          refresh();
-        } else {
-          toast.error("Something went wrong");
-        }
+  const formik = useFormik({
+    initialValues: {
+      title: "",
+    },
+    validationSchema: validationSchema(title),
+    onSubmit: (
+      values: FormValues,
+      { resetForm }: FormikHelpers<FormValues>
+    ) => {
+      putAPI("/todo", {
+        where: { id },
+        data: { title: values.title },
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
-
-    setUpdatedTask("");
-    handleClose();
-  };
+        .then((res) => {
+          if (res.status === "success" || res.status === 200) {
+            toast.success("The task was edited", {
+              iconTheme: {
+                primary: "#ff621f",
+                secondary: "#fffaee",
+              },
+            });
+            refresh();
+          } else {
+            toast.error("Something went wrong");
+          }
+        })
+        .catch((err) => {
+          toast.error(err.message);
+        })
+        .finally(() => {
+          resetForm();
+          handleClose();
+        });
+    },
+  });
 
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={formik.handleSubmit}>
       <DialogTitle
         id="alert-dialog-title"
         className="text-[22px] text-[#1f3347] font-bold leading-[1.38]"
@@ -58,12 +79,19 @@ const UpdateForm = ({ id, title, handleClose }: UpdateFormProps) => {
       </DialogTitle>
       <DialogContent>
         <input
-          value={updatedTask}
+          name="title"
           type="text"
-          className="py-1 px-2 border font-medium focus:outline-0"
+          value={formik.values.title}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          className={`py-1 px-2 border font-medium focus:outline-0 ${
+            formik.touched.title && formik.errors.title && "border-red-500"
+          }`}
           placeholder="Type here"
-          onChange={(e) => setUpdatedTask(e.target.value)}
         />
+        {formik.touched.title && formik.errors.title && (
+          <FormErrorMessage errorMessage={formik.errors.title} />
+        )}
       </DialogContent>
       <DialogActions>
         <Button
